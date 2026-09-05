@@ -1,16 +1,14 @@
 import { ReactNode } from 'react';
-import { useAuth } from '@clerk/clerk-react';
-import { Link, useLocation } from 'wouter';
+import { useClerk } from '@clerk/react';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { LogOut, UtensilsCrossed } from 'lucide-react';
 
 export function StudentLayout({ children }: { children: ReactNode }) {
-  const { signOut } = useAuth();
-  const [, setLocation] = useLocation();
+  const { signOut } = useClerk();
 
   const handleSignOut = async () => {
-    await signOut();
-    setLocation('/');
+    await signOut({ redirectUrl: import.meta.env.BASE_URL });
   };
 
   return (

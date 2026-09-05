@@ -164,7 +164,7 @@ const studentFormSchema = z.object({
   email: z.string().email(),
   name: z.string().min(2),
   grade: z.string().optional(),
-  active: z.boolean().default(true),
+  active: z.boolean(),
 });
 
 function StudentsPage() {

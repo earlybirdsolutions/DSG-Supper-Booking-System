@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useLocation, Link } from 'wouter';
+import { Redirect, Link } from 'wouter';
 import { useCheckEligibility, useGetPublicConfig } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { UtensilsCrossed, ArrowRight, Loader2, CheckCircle2, XCircle } from 'lucide-react';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth } from '@clerk/react';
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid school email address"),
@@ -17,7 +17,6 @@ const formSchema = z.object({
 
 export default function Home() {
   const { isSignedIn } = useAuth();
-  const [, setLocation] = useLocation();
   const { data: config, isLoading: isConfigLoading } = useGetPublicConfig();
   const checkEligibility = useCheckEligibility();
   
@@ -31,8 +30,7 @@ export default function Home() {
   // If already signed in, wouter will actually redirect to /book due to App.tsx SignedIn/SignedOut logic,
   // but just in case, we can also render a simple redirecting message.
   if (isSignedIn) {
-    setLocation('/book');
-    return null;
+    return <Redirect to="/book" />;
   }
 
   const form = useForm<z.infer<typeof formSchema>>({

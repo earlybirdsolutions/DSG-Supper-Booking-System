@@ -1,0 +1,1 @@
+- [Zod form resolver compatibility](zod-form-resolver.md) — keep React Hook Form’s resolver compatible with Zod 4 or validation errors can escape into Vite’s overlay.
