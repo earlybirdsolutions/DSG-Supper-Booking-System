@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: booking
+    description: Scholar booking operations
+  - name: kitchen
+    description: Kitchen dashboard operations
+  - name: admin
+    description: Admin settings and roster operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,259 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /config:
+    get:
+      operationId: getPublicConfig
+      tags: [booking]
+      summary: Get public booking configuration
+      responses:
+        "200":
+          description: Current public booking settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicConfig"
+  /eligibility:
+    post:
+      operationId: checkEligibility
+      tags: [booking]
+      summary: Check whether a school email is eligible
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EligibilityInput"
+      responses:
+        "200":
+          description: Eligibility result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EligibilityResult"
+  /me:
+    get:
+      operationId: getCurrentScholar
+      tags: [booking]
+      summary: Get the current signed-in scholar
+      responses:
+        "200":
+          description: Current scholar and their bookings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScholarDashboard"
+        "401":
+          description: Not signed in
+  /bookings:
+    post:
+      operationId: createBooking
+      tags: [booking]
+      summary: Book supper for a date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Booking confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Booking is not allowed
+        "401":
+          description: Not signed in
+    get:
+      operationId: listScholarBookings
+      tags: [booking]
+      summary: List bookings for the current scholar
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Scholar bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+  /bookings/{id}/cancel:
+    post:
+      operationId: cancelBooking
+      tags: [booking]
+      summary: Cancel a confirmed booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cancelled booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Booking not found
+  /kitchen/dashboard:
+    get:
+      operationId: getKitchenDashboard
+      tags: [kitchen]
+      summary: Get the kitchen dashboard for a date
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Kitchen dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KitchenDashboard"
+  /admin/settings:
+    get:
+      operationId: getAdminSettings
+      tags: [admin]
+      summary: Get admin settings
+      responses:
+        "200":
+          description: Admin settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSettings"
+    put:
+      operationId: updateAdminSettings
+      tags: [admin]
+      summary: Update admin settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSettingsInput"
+      responses:
+        "200":
+          description: Updated admin settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSettings"
+  /admin/students:
+    get:
+      operationId: listStudents
+      tags: [admin]
+      summary: List whitelisted students
+      responses:
+        "200":
+          description: Student whitelist
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [admin]
+      summary: Add a student to the whitelist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Added student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+  /admin/students/{email}:
+    patch:
+      operationId: updateStudent
+      tags: [admin]
+      summary: Update a whitelisted student
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    delete:
+      operationId: deleteStudent
+      tags: [admin]
+      summary: Remove a student from the whitelist
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        "204":
+          description: Student removed
+  /admin/bookings:
+    get:
+      operationId: listAllBookings
+      tags: [admin]
+      summary: View booking history
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Booking history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +292,193 @@ components:
           type: string
       required:
         - status
+    PublicConfig:
+      type: object
+      properties:
+        schoolName:
+          type: string
+        cutoffTime:
+          type: string
+        timezone:
+          type: string
+        kitchenDashboardEnabled:
+          type: boolean
+      required: [schoolName, cutoffTime, timezone, kitchenDashboardEnabled]
+    EligibilityInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required: [email]
+    EligibilityResult:
+      type: object
+      properties:
+        eligible:
+          type: boolean
+        name:
+          type: ["string", "null"]
+        message:
+          type: string
+      required: [eligible, name, message]
+    ScholarDashboard:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        grade:
+          type: ["string", "null"]
+        eligible:
+          type: boolean
+        bookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+      required: [email, name, grade, eligible, bookings]
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentEmail:
+          type: string
+          format: email
+        studentName:
+          type: string
+        bookingDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [confirmed, cancelled]
+      required: [id, studentEmail, studentName, bookingDate, createdAt, status]
+    BookingInput:
+      type: object
+      properties:
+        bookingDate:
+          type: string
+          format: date
+      required: [bookingDate]
+    KitchenBooking:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentName:
+          type: string
+        studentEmail:
+          type: string
+          format: email
+        grade:
+          type: ["string", "null"]
+        bookedAt:
+          type: string
+          format: date-time
+      required: [id, studentName, studentEmail, grade, bookedAt]
+    KitchenDashboard:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        displayDate:
+          type: string
+        count:
+          type: integer
+        cutoffTime:
+          type: string
+        cutoffPassed:
+          type: boolean
+        bookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/KitchenBooking"
+      required: [date, displayDate, count, cutoffTime, cutoffPassed, bookings]
+    AdminSettings:
+      type: object
+      properties:
+        cutoffTime:
+          type: string
+        kitchenEmails:
+          type: array
+          items:
+            type: string
+            format: email
+        financeEmails:
+          type: array
+          items:
+            type: string
+            format: email
+        summaryTime:
+          type: string
+        adminEmails:
+          type: array
+          items:
+            type: string
+            format: email
+      required: [cutoffTime, kitchenEmails, financeEmails, summaryTime, adminEmails]
+    AdminSettingsInput:
+      type: object
+      properties:
+        cutoffTime:
+          type: string
+        kitchenEmails:
+          type: array
+          items:
+            type: string
+            format: email
+        financeEmails:
+          type: array
+          items:
+            type: string
+            format: email
+        summaryTime:
+          type: string
+        adminEmails:
+          type: array
+          items:
+            type: string
+            format: email
+      required: [cutoffTime, kitchenEmails, financeEmails, summaryTime, adminEmails]
+    Student:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        grade:
+          type: ["string", "null"]
+        active:
+          type: boolean
+      required: [email, name, grade, active]
+    StudentInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        grade:
+          type: ["string", "null"]
+        active:
+          type: boolean
+      required: [email, name, active]
+    StudentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        grade:
+          type: ["string", "null"]
+        active:
+          type: boolean
 

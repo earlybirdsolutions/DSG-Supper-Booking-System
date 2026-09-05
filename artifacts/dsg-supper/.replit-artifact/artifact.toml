@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "DSG Supper Booking"
+description = "A mobile-first supper booking app for DSG day scholars, with cutoff-aware bookings, kitchen visibility, finance notifications, and admin settings."
+version = "1.0.0"
+id = "artifacts/dsg-supper"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23303
+
+[services.development]
+run = "pnpm --filter @workspace/dsg-supper run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dsg-supper", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dsg-supper/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23303"
+BASE_PATH = "/"

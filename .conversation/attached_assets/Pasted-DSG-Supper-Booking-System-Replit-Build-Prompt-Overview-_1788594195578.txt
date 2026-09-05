@@ -1,0 +1,81 @@
+DSG Supper Booking System - Replit Build Prompt
+Overview
+
+Build a lightweight web app for DSG (Diocesan School for Girls) that lets day scholars staying late book a supper meal ahead of a daily cutoff time. The kitchen needs to know numbers to cater for, and finance needs a record for billing. This is a standalone app, not connected to any existing systems.
+
+Users
+Scholar: logs in, books supper for a date
+Kitchen staff: views live dashboard, receives daily summary email
+Finance: receives an email per booking
+Admin (IT Solutions team): manages settings via a protected admin page
+Core features
+1. Login (email OTP, no passwords)
+Scholar enters their school email address
+System checks the email against a known/whitelisted student list stored in the database
+If found, generate a 6-digit one-time code and email it to the scholar
+Scholar enters the code to log in (create a session)
+If the email is not on the whitelist, show a clear message that they are not recognised and to contact IT/admin
+2. Booking screen
+Logged-in scholar sees a simple form: select a date (today or future), confirm booking
+Booking for a given day is only allowed before that day's cutoff time (default 13:30, stored as a setting, adjustable by admin)
+Once the cutoff has passed for a date, that date should be disabled/greyed out in the date picker
+On successful booking, show a clear confirmation to the scholar
+Prevent duplicate bookings for the same scholar and same date
+3. Notifications
+On every successful booking, automatically send an email to:
+the kitchen notification address(es), configurable
+the finance notification address(es), configurable
+Email should include: scholar name, email, date booked, time of booking
+4. Kitchen dashboard
+Simple page (could be login-light or a shared staff link) showing:
+Today's running count of bookings
+List of names booked for today
+Auto-refresh every 60 seconds, or a manual refresh button
+A scheduled daily summary email sent automatically at a set time (e.g. shortly before or after cutoff) listing everyone booked for that day
+5. Admin settings page (password protected)
+Edit the daily cutoff time
+Manage the list of kitchen notification email addresses
+Manage the list of finance notification email addresses
+Manage the whitelist of student emails and names (add/remove/edit)
+View a simple running log/history of all bookings (no reporting or export needed, just a log)
+Data model
+
+students
+
+email (unique)
+name
+grade (optional)
+active (boolean)
+
+bookings
+
+id
+student_email
+student_name
+booking_date
+created_at (timestamp)
+status (confirmed / cancelled)
+
+settings
+
+cutoff_time (default 13:30)
+kitchen_emails (list)
+finance_emails (list)
+Technical suggestions
+Backend: Node/Express or Python/Flask, whichever is faster to scaffold in Replit
+Database: SQLite or Replit DB is sufficient at this scale
+Email sending: use an email API (e.g. Resend or SendGrid) for OTP codes and notifications
+Scheduled daily summary email: use Replit's scheduled deployments/cron feature
+Keep the UI simple and mobile friendly, scholars will likely use this on their phones
+No need for user roles beyond scholar and admin, kitchen dashboard can be a simple shared link without full login
+What NOT to build
+No approval workflow, bookings are self-service and final
+No formal reporting or export functionality, a running log is enough
+No integration with existing school systems
+No parent or hostel matron visibility
+Success criteria
+A day scholar can log in with just their school email and a one-time code
+They can book supper for today (if before 13:30) or a future date
+The kitchen always has an accurate, current list of who is booked for today
+Finance receives an email for every booking automatically
+Garry's IT Solutions team can adjust the cutoff time and email lists without touching code
