@@ -1,6 +1,6 @@
-# [Project name]
+# DSG Supper Booking
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A mobile-first supper reservation system for DSG day scholars, kitchen staff, finance, and IT administrators.
 
 ## Run & Operate
 
@@ -22,15 +22,24 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/dsg-supper/` — React scholar, kitchen, and admin interfaces
+- `artifacts/api-server/src/routes/dsg.ts` — booking rules and API handlers
+- `lib/api-spec/openapi.yaml` — source of truth for API contracts
+- `lib/db/src/schema/` — students, bookings, and settings tables
+- `artifacts/dsg-supper/src/index.css` — visual theme tokens
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Calendar dates stay as `YYYY-MM-DD` strings throughout the API and database to avoid timezone shifts.
+- All cutoff calculations use `Africa/Johannesburg`.
+- Clerk provides secure browser sessions; the database whitelist determines who may book and which signed-in users may administer the app.
+- The kitchen dashboard is shareable without full role management; admin endpoints require an authenticated email in `adminEmails`.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Scholars can confirm eligibility, sign in, book future suppers before cutoff, and cancel before cutoff.
+- Kitchen staff can view a live, auto-refreshing daily headcount and scholar list.
+- Administrators can manage cutoff/notification settings, the student whitelist, and booking history.
 
 ## User preferences
 
@@ -38,7 +47,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run API codegen after every OpenAPI change.
+- Transactional email delivery still requires a connected email provider; booking events currently log the intended recipient counts.
 
 ## Pointers
 

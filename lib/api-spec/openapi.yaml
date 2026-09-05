@@ -105,12 +105,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
         - name: to
           in: query
           schema:
             type: string
-            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
       responses:
         "200":
           description: Scholar bookings
@@ -151,7 +151,7 @@ paths:
           required: true
           schema:
             type: string
-            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
       responses:
         "200":
           description: Kitchen dashboard
@@ -268,12 +268,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
         - name: to
           in: query
           schema:
             type: string
-            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
       responses:
         "200":
           description: Booking history
@@ -350,7 +350,7 @@ components:
           type: string
         bookingDate:
           type: string
-          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
         createdAt:
           type: string
           format: date-time
@@ -363,7 +363,7 @@ components:
       properties:
         bookingDate:
           type: string
-          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
       required: [bookingDate]
     KitchenBooking:
       type: object
@@ -386,7 +386,7 @@ components:
       properties:
         date:
           type: string
-          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
         displayDate:
           type: string
         count:

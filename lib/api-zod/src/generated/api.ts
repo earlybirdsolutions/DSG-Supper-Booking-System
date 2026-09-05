@@ -45,6 +45,9 @@ export const CheckEligibilityResponse = zod.object({
 /**
  * @summary Get the current signed-in scholar
  */
+export const getCurrentScholarResponseBookingsItemBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const GetCurrentScholarResponse = zod.object({
   "email": zod.email(),
   "name": zod.string(),
@@ -54,7 +57,7 @@ export const GetCurrentScholarResponse = zod.object({
   "id": zod.int(),
   "studentEmail": zod.email(),
   "studentName": zod.string(),
-  "bookingDate": zod.coerce.date(),
+  "bookingDate": zod.string().regex(getCurrentScholarResponseBookingsItemBookingDateRegExp),
   "createdAt": zod.coerce.date(),
   "status": zod.enum(['confirmed', 'cancelled'])
 }))
@@ -64,15 +67,21 @@ export const GetCurrentScholarResponse = zod.object({
 /**
  * @summary Book supper for a date
  */
+export const createBookingBodyBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const CreateBookingBody = zod.object({
-  "bookingDate": zod.coerce.date()
+  "bookingDate": zod.string().regex(createBookingBodyBookingDateRegExp)
 })
+
+export const createBookingResponseBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
 
 export const CreateBookingResponse = zod.object({
   "id": zod.int(),
   "studentEmail": zod.email(),
   "studentName": zod.string(),
-  "bookingDate": zod.coerce.date(),
+  "bookingDate": zod.string().regex(createBookingResponseBookingDateRegExp),
   "createdAt": zod.coerce.date(),
   "status": zod.enum(['confirmed', 'cancelled'])
 })
@@ -81,16 +90,23 @@ export const CreateBookingResponse = zod.object({
 /**
  * @summary List bookings for the current scholar
  */
+export const listScholarBookingsQueryFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const listScholarBookingsQueryToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const ListScholarBookingsQueryParams = zod.object({
-  "from": zod.date().optional(),
-  "to": zod.date().optional()
+  "from": zod.coerce.string().regex(listScholarBookingsQueryFromRegExp).optional(),
+  "to": zod.coerce.string().regex(listScholarBookingsQueryToRegExp).optional()
 })
+
+export const listScholarBookingsResponseBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
 
 export const ListScholarBookingsResponseItem = zod.object({
   "id": zod.int(),
   "studentEmail": zod.email(),
   "studentName": zod.string(),
-  "bookingDate": zod.coerce.date(),
+  "bookingDate": zod.string().regex(listScholarBookingsResponseBookingDateRegExp),
   "createdAt": zod.coerce.date(),
   "status": zod.enum(['confirmed', 'cancelled'])
 })
@@ -104,11 +120,14 @@ export const CancelBookingParams = zod.object({
   "id": zod.coerce.number().int()
 })
 
+export const cancelBookingResponseBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const CancelBookingResponse = zod.object({
   "id": zod.int(),
   "studentEmail": zod.email(),
   "studentName": zod.string(),
-  "bookingDate": zod.coerce.date(),
+  "bookingDate": zod.string().regex(cancelBookingResponseBookingDateRegExp),
   "createdAt": zod.coerce.date(),
   "status": zod.enum(['confirmed', 'cancelled'])
 })
@@ -117,12 +136,18 @@ export const CancelBookingResponse = zod.object({
 /**
  * @summary Get the kitchen dashboard for a date
  */
+export const getKitchenDashboardQueryDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const GetKitchenDashboardQueryParams = zod.object({
-  "date": zod.date()
+  "date": zod.coerce.string().regex(getKitchenDashboardQueryDateRegExp)
 })
 
+export const getKitchenDashboardResponseDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const GetKitchenDashboardResponse = zod.object({
-  "date": zod.coerce.date(),
+  "date": zod.string().regex(getKitchenDashboardResponseDateRegExp),
   "displayDate": zod.string(),
   "count": zod.int(),
   "cutoffTime": zod.string(),
@@ -233,16 +258,23 @@ export const DeleteStudentResponse = zod.void()
 /**
  * @summary View booking history
  */
+export const listAllBookingsQueryFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const listAllBookingsQueryToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
 export const ListAllBookingsQueryParams = zod.object({
-  "from": zod.date().optional(),
-  "to": zod.date().optional()
+  "from": zod.coerce.string().regex(listAllBookingsQueryFromRegExp).optional(),
+  "to": zod.coerce.string().regex(listAllBookingsQueryToRegExp).optional()
 })
+
+export const listAllBookingsResponseBookingDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
 
 export const ListAllBookingsResponseItem = zod.object({
   "id": zod.int(),
   "studentEmail": zod.email(),
   "studentName": zod.string(),
-  "bookingDate": zod.coerce.date(),
+  "bookingDate": zod.string().regex(listAllBookingsResponseBookingDateRegExp),
   "createdAt": zod.coerce.date(),
   "status": zod.enum(['confirmed', 'cancelled'])
 })

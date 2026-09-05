@@ -11,7 +11,8 @@ export interface Booking {
   id: number;
   studentEmail: string;
   studentName: string;
-  bookingDate: Date;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  bookingDate: string;
   createdAt: Date;
   status: BookingStatus;
 }

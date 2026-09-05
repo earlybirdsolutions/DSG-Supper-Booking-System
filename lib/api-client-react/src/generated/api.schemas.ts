@@ -39,6 +39,7 @@ export interface Booking {
   id: number;
   studentEmail: string;
   studentName: string;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
   bookingDate: string;
   createdAt: string;
   status: BookingStatus;
@@ -54,6 +55,7 @@ export interface ScholarDashboard {
 }
 
 export interface BookingInput {
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
   bookingDate: string;
 }
 
@@ -67,6 +69,7 @@ export interface KitchenBooking {
 }
 
 export interface KitchenDashboard {
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
   date: string;
   displayDate: string;
   count: number;
@@ -115,16 +118,31 @@ export interface StudentUpdate {
 }
 
 export type ListScholarBookingsParams = {
+/**
+ * @pattern ^\d{4}-\d{2}-\d{2}$
+ */
 from?: string;
+/**
+ * @pattern ^\d{4}-\d{2}-\d{2}$
+ */
 to?: string;
 };
 
 export type GetKitchenDashboardParams = {
+/**
+ * @pattern ^\d{4}-\d{2}-\d{2}$
+ */
 date: string;
 };
 
 export type ListAllBookingsParams = {
+/**
+ * @pattern ^\d{4}-\d{2}-\d{2}$
+ */
 from?: string;
+/**
+ * @pattern ^\d{4}-\d{2}-\d{2}$
+ */
 to?: string;
 };
 

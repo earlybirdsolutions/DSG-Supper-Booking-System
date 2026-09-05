@@ -8,7 +8,8 @@
 import type { KitchenBooking } from './kitchenBooking';
 
 export interface KitchenDashboard {
-  date: Date;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  date: string;
   displayDate: string;
   count: number;
   cutoffTime: string;
